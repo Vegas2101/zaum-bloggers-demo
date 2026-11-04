@@ -29,6 +29,7 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
 .tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 input[type=search],select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;min-height:40px}
 input[type=search]{flex:1 1 220px;min-width:0}
+.dirbtn{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;min-width:40px;min-height:40px;padding:0 12px;cursor:pointer;white-space:nowrap}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font:inherit;font-size:13.5px;cursor:pointer;min-height:34px}
 .chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
@@ -81,13 +82,10 @@ a.btn{display:block;text-align:center;margin-top:14px;background:var(--accent);c
 <div class="tools">
 <input type="search" id="q" placeholder="Поиск: блогер, артикул, комментарий" aria-label="Поиск">
 <select id="bud" aria-label="Бюджет"><option value="">Любой бюджет</option><option>Платное размещение</option><option>Бартер</option></select>
-<select id="sort" aria-label="Сортировка">
-<option value="date:1">Дата: сначала ближайшие</option><option value="date:-1">Дата: сначала поздние</option>
-<option value="cpm:1">CPM: сначала дешёвые</option><option value="cpm:-1">CPM: сначала дорогие</option>
-<option value="reach:-1">Охват: сначала больше</option><option value="reach:1">Охват: сначала меньше</option>
-<option value="subs:-1">Подписчики: сначала больше</option><option value="subs:1">Подписчики: сначала меньше</option>
-<option value="spend:-1">Затраты: сначала больше</option><option value="spend:1">Затраты: сначала меньше</option>
-<option value="name:1">Блогер: А → Я</option><option value="name:-1">Блогер: Я → А</option></select>
+<select id="sort" aria-label="Сортировать по">
+<option value="date">Дата</option><option value="cpm">CPM</option><option value="reach">Охват</option>
+<option value="subs">Подписчики</option><option value="spend">Затраты</option><option value="name">Блогер</option></select>
+<button class="dirbtn" id="dir" type="button"></button>
 </div>
 <div class="tbl"><table><thead><tr><th data-s="name" tabindex="0">Блогер</th><th>Площадка</th><th>Статус</th><th data-s="date" tabindex="0">Дата</th><th class="r" data-s="subs" tabindex="0">Подписчики</th><th class="r" data-s="reach" tabindex="0">Охват сторис</th><th class="r" data-s="spend" tabindex="0">Затраты</th><th class="r" data-s="cpm" tabindex="0">CPM</th></tr></thead><tbody id="tb"></tbody></table></div>
 <div class="cards" id="cards"></div>
@@ -174,11 +172,11 @@ function render(){
  $('cards').innerHTML=L.map(r=>`<div class="card" ${tag(r)}><div class="top"><div><div class="nm">${esc(r.name)}</div><div class="art">${esc(r.plat)} · ${kind(r)} · ${dfmt(r.date)}</div></div>${badge(r)}</div>
  <div class="g"><div><span>Охват</span>${fmt(r.reach)}</div><div><span>Затраты${r.barter?' (товар)':''}</span>${rub(r.spend)}</div><div><span>CPM</span>${rubOrDash(r.cpm)}</div></div></div>`).join('');
  document.querySelectorAll('th[data-s]').forEach(h=>{if(h.dataset.s===S.key)h.setAttribute('aria-sort',S.dir>0?'ascending':'descending');else h.removeAttribute('aria-sort')});
- // сортировка по столбцу таблицы не входит в список, поэтому показываем её временным пунктом
- const sel=$('sort'),sv=S.key+':'+S.dir;
- sel.querySelector('[value=custom]')?.remove();
- if(![...sel.options].some(o=>o.value===sv)){const o=new Option('По столбцу таблицы','custom');sel.add(o)}
- sel.value=[...sel.options].some(o=>o.value===sv)?sv:'custom';
+ $('sort').value=S.key;
+ // подпись кнопки зависит от поля: для чисел «меньше/больше», для даты «раньше/позже», для имени А/Я
+ const L2={date:['раньше','позже'],name:['А → Я','Я → А']}[S.key]||['меньше','больше'];
+ const dir=$('dir');dir.textContent=(S.dir>0?'↑ ':'↓ ')+(S.dir>0?L2[0]:L2[1]);
+ dir.setAttribute('aria-label','Направление сортировки: '+(S.dir>0?L2[0]+' сверху':L2[1]+' сверху')+'. Нажмите, чтобы изменить')
 }
 // карточка блогера
 let lastFocus=null;
@@ -215,7 +213,9 @@ document.addEventListener('keydown',e=>{
 $('q').oninput=e=>{S.q=e.target.value.trim().toLowerCase();render()};
 $('plat').onchange=e=>{S.plat=e.target.value;render()};
 $('bud').onchange=e=>{S.bud=e.target.value;render()};
-$('sort').onchange=e=>{const [k,d]=e.target.value.split(':');S.key=k;S.dir=+d;render()};
+// при смене поля берём для него направление по умолчанию
+$('sort').onchange=e=>{S.key=e.target.value;S.dir=DIRS[S.key];render()};
+$('dir').onclick=()=>{S.dir=-S.dir;render()};
 render();
 </script>
 </body>
