@@ -45,14 +45,14 @@ th.r,td.r{text-align:right;font-variant-numeric:tabular-nums}
 tbody tr{cursor:pointer}tbody tr:hover{background:var(--accent-soft)}tr:last-child td{border-bottom:0}
 .nm,.rowbtn{font-weight:600}
 .rowbtn{font:inherit;font-weight:600;color:inherit;background:none;border:0;padding:0;text-align:left;cursor:pointer}.art{color:var(--mute);font-size:12px}
-.st{display:inline-block;border-radius:99px;padding:2px 9px;font-size:12.5px;font-weight:500}
+.st{white-space:nowrap;display:inline-block;border-radius:99px;padding:2px 9px;font-size:12.5px;font-weight:500}
 .s-Согласование{background:var(--warn-bg);color:var(--warn)}.s-Запланировано{background:var(--info-bg);color:var(--info)}
 .s-Опубликовано{background:var(--accent-soft);color:var(--accent)}.s-Результаты{background:var(--ok-bg);color:var(--ok)}
 .pl{font-size:12.5px;color:var(--mute)}
 .cards{display:none}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;cursor:pointer}
 .card .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-.card .g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px;font-size:13px}
+.card .g{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:10px;font-size:14px}
 .card .g span{color:var(--mute);display:block;font-size:11.5px}
 .empty{text-align:center;color:var(--mute);padding:30px 0}
 .drawer{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:10}
@@ -170,7 +170,7 @@ function render(){
  $('tb').innerHTML=L.map(r=>`<tr ${rowTag(r)}><td><button class="rowbtn" data-i="${r.i}">${esc(r.name)}</button><div class="art">${esc(r.art)} · ${esc(r.fmt)}</div></td><td>${esc(r.plat)}<div class="pl">${kind(r)}</div></td>
  <td>${badge(r)}</td><td>${dfmt(r.date)}</td><td class="r">${short(r.subs)}</td><td class="r">${fmt(r.reach)}</td><td class="r">${rub(r.spend)}${spendNote(r)}</td><td class="r">${rubOrDash(r.cpm)}</td></tr>`).join('');
  $('cards').innerHTML=L.map(r=>`<div class="card" ${tag(r)}><div class="top"><div><div class="nm">${esc(r.name)}</div><div class="art">${esc(r.plat)} · ${kind(r)} · ${dfmt(r.date)}</div></div>${badge(r)}</div>
- <div class="g"><div><span>Охват</span>${fmt(r.reach)}</div><div><span>Затраты${r.barter?' (товар)':''}</span>${rub(r.spend)}</div><div><span>CPM</span>${rubOrDash(r.cpm)}</div></div></div>`).join('');
+ <div class="g"><div><span>Подписчики</span>${fmt(r.subs)}</div><div><span>Охват сторис</span>${fmt(r.reach)}</div><div><span>Затраты${r.barter?' (товар)':''}</span>${rub(r.spend)}</div><div><span>CPM</span>${rubOrDash(r.cpm)}</div></div></div>`).join('');
  document.querySelectorAll('th[data-s]').forEach(h=>{if(h.dataset.s===S.key)h.setAttribute('aria-sort',S.dir>0?'ascending':'descending');else h.removeAttribute('aria-sort')});
  $('sort').value=S.key;
  // подпись кнопки зависит от поля: для чисел «меньше/больше», для даты «раньше/позже», для имени А/Я
