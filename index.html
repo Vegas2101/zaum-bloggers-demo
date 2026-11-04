@@ -29,6 +29,9 @@ header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
 .tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 input[type=search],select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;min-height:40px}
 input[type=search]{flex:1 1 220px;min-width:0}
+.tools select{flex:1 1 0;min-width:0;text-overflow:ellipsis}
+.dirbtn{flex:0 0 auto}
+@media(max-width:560px){input[type=search]{flex-basis:100%}}
 .dirbtn{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;min-width:40px;min-height:40px;padding:0 12px;cursor:pointer;white-space:nowrap}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font:inherit;font-size:13.5px;cursor:pointer;min-height:34px}
@@ -81,10 +84,10 @@ a.btn{display:block;text-align:center;margin-top:14px;background:var(--accent);c
 <div class="chips" id="chips"></div>
 <div class="tools">
 <input type="search" id="q" placeholder="Поиск: блогер, артикул, комментарий" aria-label="Поиск">
-<select id="bud" aria-label="Бюджет"><option value="">Любой бюджет</option><option>Платное размещение</option><option>Бартер</option></select>
+<select id="bud" aria-label="Бюджет"><option value="">Бюджет</option><option>Платное размещение</option><option>Бартер</option></select>
 <select id="sort" aria-label="Сортировать по">
-<option value="date">Дата</option><option value="cpm">CPM</option><option value="reach">Охват</option>
-<option value="subs">Подписчики</option><option value="spend">Затраты</option><option value="name">Блогер</option></select>
+<option value="date">По дате</option><option value="cpm">По CPM</option><option value="reach">По охвату</option>
+<option value="subs">По подписчикам</option><option value="spend">По затратам</option><option value="name">По имени</option></select>
 <button class="dirbtn" id="dir" type="button"></button>
 </div>
 <div class="tbl"><table><thead><tr><th data-s="name" tabindex="0">Блогер</th><th>Площадка</th><th>Статус</th><th data-s="date" tabindex="0">Дата</th><th class="r" data-s="subs" tabindex="0">Подписчики</th><th class="r" data-s="reach" tabindex="0">Охват сторис</th><th class="r" data-s="spend" tabindex="0">Затраты</th><th class="r" data-s="cpm" tabindex="0">CPM</th></tr></thead><tbody id="tb"></tbody></table></div>
