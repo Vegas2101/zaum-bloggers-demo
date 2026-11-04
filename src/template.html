@@ -82,8 +82,12 @@ a.btn{display:block;text-align:center;margin-top:14px;background:var(--accent);c
 <input type="search" id="q" placeholder="Поиск: блогер, артикул, комментарий" aria-label="Поиск">
 <select id="bud" aria-label="Бюджет"><option value="">Любой бюджет</option><option>Платное размещение</option><option>Бартер</option></select>
 <select id="sort" aria-label="Сортировка">
-<option value="date:1">Сначала ближайшие даты</option><option value="cpm:1">CPM: дешёвые сверху</option><option value="cpm:-1">CPM: дорогие сверху</option>
-<option value="reach:-1">Охват: больше сверху</option><option value="subs:-1">Подписчики: больше сверху</option><option value="spend:-1">Затраты: выше сверху</option></select>
+<option value="date:1">Дата: сначала ближайшие</option><option value="date:-1">Дата: сначала поздние</option>
+<option value="cpm:1">CPM: сначала дешёвые</option><option value="cpm:-1">CPM: сначала дорогие</option>
+<option value="reach:-1">Охват: сначала больше</option><option value="reach:1">Охват: сначала меньше</option>
+<option value="subs:-1">Подписчики: сначала больше</option><option value="subs:1">Подписчики: сначала меньше</option>
+<option value="spend:-1">Затраты: сначала больше</option><option value="spend:1">Затраты: сначала меньше</option>
+<option value="name:1">Блогер: А → Я</option><option value="name:-1">Блогер: Я → А</option></select>
 </div>
 <div class="tbl"><table><thead><tr><th data-s="name" tabindex="0">Блогер</th><th>Площадка</th><th>Статус</th><th data-s="date" tabindex="0">Дата</th><th class="r" data-s="subs" tabindex="0">Подписчики</th><th class="r" data-s="reach" tabindex="0">Охват сторис</th><th class="r" data-s="spend" tabindex="0">Затраты</th><th class="r" data-s="cpm" tabindex="0">CPM</th></tr></thead><tbody id="tb"></tbody></table></div>
 <div class="cards" id="cards"></div>
@@ -136,6 +140,8 @@ function sorted(a){const k=S.key,m=S.dir;
   if(k==='date')return (dd(x.date)-dd(y.date))*m;
   if(k==='name')return x.name.localeCompare(y.name,'ru')*m;
   if(x[k]==null||y[k]==null)return (x[k]==null)-(y[k]==null);
+  // CPM бартера считается от себестоимости товара и несопоставим с платными: сначала платные, потом бартер
+  if(k==='cpm'&&x.barter!==y.barter)return x.barter-y.barter;
   return (x[k]-y[k])*m})}
 const PRIO={bad:0,warn:1,info:2};
 const tag=r=>`data-i="${r.i}" tabindex="0" role="button"`;
